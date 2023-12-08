@@ -2,25 +2,46 @@ package com.batchprogram.batchprac;
 
 import com.batchprogram.batchprac.batch.BatchStatus;
 import com.batchprogram.batchprac.batch.JobExecution;
-import com.batchprogram.batchprac.customer.Customer;
-import com.batchprogram.batchprac.customer.CustomerRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import com.batchprogram.batchprac.batch.JobExecutionListener;
+import com.batchprogram.batchprac.batch.Tasklet;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Component //컨테이너 등록
-public class DormantBatchJob {
-    private final CustomerRepository customerRepository;
-    private final EmailProvider emailProvider;
 
-    public DormantBatchJob(CustomerRepository customerRepository) {
+public class Job { // @Component로 등록하지 않아도 됨 DormantBatchConfiguration에서 등록
+/*    private final CustomerRepository customerRepository;
+    private final EmailProvider emailProvider;*/
+    private final Tasklet tasklet;
+    private final JobExecutionListener jobExecutionListener;
+
+    public Job(Tasklet tasklet) {
+        this(tasklet, null);
+    }
+    public Job(Tasklet tasklet, JobExecutionListener jobExecutionListener) {
+        this.tasklet = tasklet;
+        //this.jobExecutionListener = jobExecutionListener;
+        this.jobExecutionListener = Objects.requireNonNullElseGet(jobExecutionListener, ()-> new JobExecutionListener() {
+            @Override
+            public void beforeJob(JobExecution jobExecution) {
+
+            }
+
+            @Override
+            public void afterJob(JobExecution jobExecution) {
+
+            }
+        });
+    }
+
+
+/*
+    public Job(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
         this.emailProvider = new EmailProvider.Fake();
     }
+*/
 
     public JobExecution execute() {
 
@@ -30,11 +51,14 @@ public class DormantBatchJob {
         jobExecution.setStatus(BatchStatus.STARTING);
         jobExecution.setStartTime(LocalDateTime.now());
 
+        jobExecutionListener.beforeJob(jobExecution);
 
         //알람 batch
-        int pageNo = 0;
+
         try {
-            while (true) {
+        //비즈니스 로직
+        /*            while (true) {
+                int pageNo = 0;
                 // 1. 유저를 조회한다.
                 final PageRequest pageRequest = PageRequest.of(pageNo, 1, Sort.by("id").ascending()); // 소트를 해주어야 원하는 결과로
                 final Page<Customer> page = customerRepository.findAll(pageRequest);
@@ -64,7 +88,8 @@ public class DormantBatchJob {
                 emailProvider.send(customer.getEmail(), "휴면전환 안내메일입니다.", "내용");
 
 
-            }
+            }*/
+            tasklet.execute();
             jobExecution.setStatus(BatchStatus.COMPLETED);
         } catch (Exception e) {
             jobExecution.setStatus(BatchStatus.FAILED);
@@ -72,11 +97,13 @@ public class DormantBatchJob {
 
         jobExecution.setEndTime(LocalDateTime.now());
 
-        emailProvider.send(
+        //비즈니스 로직
+        /*        emailProvider.send(
                 "admin@gmail.com",
                 "배치 완료 알림",
                 "DormantBatchJob이 수행되었습니다. status : " + jobExecution.getStatus()
-        );
+        );*/
+        jobExecutionListener.afterJob(jobExecution);
         return jobExecution;
     }
     //Job의 성공여부 , Job의 실행/종료 시간 , 배치 실행 완료되면 알림기능

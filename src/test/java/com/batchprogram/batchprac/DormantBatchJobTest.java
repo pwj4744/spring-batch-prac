@@ -4,14 +4,15 @@ import com.batchprogram.batchprac.batch.BatchStatus;
 import com.batchprogram.batchprac.batch.JobExecution;
 import com.batchprogram.batchprac.customer.Customer;
 import com.batchprogram.batchprac.customer.CustomerRepository;
+import com.batchprogram.batchprac.Job;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -23,7 +24,7 @@ class DormantBatchJobTest {
     private CustomerRepository customerRepository;
 
     @Autowired
-    private DormantBatchJob dormantBatchJob;
+    private Job dormantBatchJob;
 
     @BeforeEach
     public void setup() { // 시작 전 데이터를 모두 지운다.
@@ -112,7 +113,7 @@ class DormantBatchJobTest {
     void test4() {
 
         // given
-        final DormantBatchJob dormantBatchJob = new DormantBatchJob(null);
+        final Job dormantBatchJob = new Job(null,null);
 
         // when
         final JobExecution result = dormantBatchJob.execute();
