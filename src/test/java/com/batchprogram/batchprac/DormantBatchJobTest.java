@@ -1,5 +1,7 @@
 package com.batchprogram.batchprac;
 
+import com.batchprogram.batchprac.batch.BatchStatus;
+import com.batchprogram.batchprac.batch.JobExecution;
 import com.batchprogram.batchprac.customer.Customer;
 import com.batchprogram.batchprac.customer.CustomerRepository;
 
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
@@ -23,7 +26,7 @@ class DormantBatchJobTest {
     private DormantBatchJob dormantBatchJob;
 
     @BeforeEach
-    public void setup() {
+    public void setup() { // 시작 전 데이터를 모두 지운다.
         customerRepository.deleteAll();
     }
     @Test
@@ -34,13 +37,16 @@ class DormantBatchJobTest {
         saveCustomer(366);
         saveCustomer(366);
         saveCustomer(366);
+
+        saveCustomer(364);
+        saveCustomer(364);
         saveCustomer(364);
         saveCustomer(364);
         saveCustomer(364);
 
 
         // when
-        dormantBatchJob.execute();
+        final JobExecution result = dormantBatchJob.execute();
 
 
         // then
@@ -50,7 +56,7 @@ class DormantBatchJobTest {
                 .count();
 
         Assertions.assertThat(dormantCount).isEqualTo(3);
-
+        Assertions.assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
 
     }
 
@@ -71,7 +77,7 @@ class DormantBatchJobTest {
         saveCustomer(400);
 
         // when
-        dormantBatchJob.execute();
+        final JobExecution result = dormantBatchJob.execute();
 
         // then
         final long dormantCount = customerRepository.findAll()
@@ -80,6 +86,7 @@ class DormantBatchJobTest {
                 .count();
 
         Assertions.assertThat(dormantCount).isEqualTo(10);
+        Assertions.assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
     }
 
     @Test
@@ -87,7 +94,7 @@ class DormantBatchJobTest {
     void test3() {
 
         // when
-        dormantBatchJob.execute();
+        final JobExecution result = dormantBatchJob.execute();
 
         // then
         final long dormantCount = customerRepository.findAll()
@@ -96,6 +103,7 @@ class DormantBatchJobTest {
                 .count();
 
         Assertions.assertThat(dormantCount).isEqualTo(0);
+        Assertions.assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
 
     }
 
@@ -103,6 +111,14 @@ class DormantBatchJobTest {
     @DisplayName("배치가 실패하면 BatchStatus는 FAILED를 반환해야한다.")
     void test4() {
 
+        // given
+        final DormantBatchJob dormantBatchJob = new DormantBatchJob(null);
+
+        // when
+        final JobExecution result = dormantBatchJob.execute();
+        // then
+
+        Assertions.assertThat(result.getStatus()).isEqualTo(BatchStatus.FAILED);
     }
 
 
