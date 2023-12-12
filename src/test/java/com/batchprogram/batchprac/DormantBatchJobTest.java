@@ -116,7 +116,7 @@ class DormantBatchJobTest {
     void test4() {
 
         // given
-        final Job dormantBatchJob = new TaskletJob(null,null);
+        final Job dormantBatchJob = new TaskletJob(null);
 
         // when
         final JobExecution result = dormantBatchJob.execute();
