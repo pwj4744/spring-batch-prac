@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 public class PreDormantBatchItemWriter implements ItemWriter<Customer> {
 
     private final EmailProvider emailProvider;
+
+    //스프링 빈이라 어떤생성자를 이용해야할지 모르기때문에 @Autowired 지정
     @Autowired
     public PreDormantBatchItemWriter() {
         this.emailProvider = new EmailProvider.Fake();
