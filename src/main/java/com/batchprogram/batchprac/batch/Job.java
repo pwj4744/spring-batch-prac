@@ -1,9 +1,7 @@
-package com.batchprogram.batchprac;
+package com.batchprogram.batchprac.batch;
 
-import com.batchprogram.batchprac.batch.BatchStatus;
-import com.batchprogram.batchprac.batch.JobExecution;
-import com.batchprogram.batchprac.batch.JobExecutionListener;
-import com.batchprogram.batchprac.batch.Tasklet;
+import com.batchprogram.batchprac.batch.*;
+import lombok.Builder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,6 +16,10 @@ public class Job { // @Component로 등록하지 않아도 됨 DormantBatchConfi
 
     public Job(Tasklet tasklet) {
         this(tasklet, null);
+    }
+    @Builder
+    public Job(ItemReader<?> itemReader, ItemProcessor<?, ?> itemProcessor, ItemWriter<?> itemWriter, JobExecutionListener jobExecutionListener) {
+        this(new SimpleTasklet(itemReader, itemProcessor, itemWriter), jobExecutionListener);
     }
     public Job(Tasklet tasklet, JobExecutionListener jobExecutionListener) {
         this.tasklet = tasklet;

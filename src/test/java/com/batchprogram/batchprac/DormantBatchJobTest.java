@@ -4,7 +4,7 @@ import com.batchprogram.batchprac.batch.BatchStatus;
 import com.batchprogram.batchprac.batch.JobExecution;
 import com.batchprogram.batchprac.customer.Customer;
 import com.batchprogram.batchprac.customer.CustomerRepository;
-import com.batchprogram.batchprac.Job;
+import com.batchprogram.batchprac.batch.Job;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,6 +65,8 @@ class DormantBatchJobTest {
     @Test
     @DisplayName("고객이 열명이 있지만 모두 다 휴먼전환대상이면(1년 경과한사람) 휴먼전환 대상은 10명이다")
     void test2() {
+
+
         // given
         saveCustomer(400);
         saveCustomer(400);
