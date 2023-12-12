@@ -1,6 +1,7 @@
-package com.batchprogram.batchprac.application;
+package com.batchprogram.batchprac.application.dormant;
 
 import com.batchprogram.batchprac.batch.Job;
+import com.batchprogram.batchprac.batch.TaskletJob;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +15,7 @@ public class DormantBatchConfiguration {
             DormantBatchItemWriter itemWriter,
             DormantBatchJobExecutionListener listener
     ) {
-        return Job.builder()
+        return TaskletJob.builder()
                 .itemReader(itemReader)
                 .itemProcessor(itemProcessor)
                 .itemWriter(itemWriter)

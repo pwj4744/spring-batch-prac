@@ -1,4 +1,4 @@
-package com.batchprogram.batchprac.application;
+package com.batchprogram.batchprac.application.dormant;
 
 import com.batchprogram.batchprac.batch.ItemProcessor;
 import com.batchprogram.batchprac.customer.Customer;

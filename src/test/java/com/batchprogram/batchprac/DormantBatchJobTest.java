@@ -2,6 +2,7 @@ package com.batchprogram.batchprac;
 
 import com.batchprogram.batchprac.batch.BatchStatus;
 import com.batchprogram.batchprac.batch.JobExecution;
+import com.batchprogram.batchprac.batch.TaskletJob;
 import com.batchprogram.batchprac.customer.Customer;
 import com.batchprogram.batchprac.customer.CustomerRepository;
 import com.batchprogram.batchprac.batch.Job;
@@ -115,7 +116,7 @@ class DormantBatchJobTest {
     void test4() {
 
         // given
-        final Job dormantBatchJob = new Job(null,null);
+        final Job dormantBatchJob = new TaskletJob(null,null);
 
         // when
         final JobExecution result = dormantBatchJob.execute();
