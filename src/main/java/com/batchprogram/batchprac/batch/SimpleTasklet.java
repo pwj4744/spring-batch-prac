@@ -2,7 +2,7 @@ package com.batchprogram.batchprac.batch;
 
 import org.springframework.stereotype.Component;
 
-@Component
+//SimpleTasklet은 Bean이 될 필요 X
 public class SimpleTasklet<I, O> implements Tasklet {
 
     private final ItemReader<I> itemReader;
